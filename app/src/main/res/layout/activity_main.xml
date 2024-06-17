@@ -41,7 +41,7 @@
                     android:id="@+id/pId_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Not Assigned"
+                    android:text="@string/not_assigned"
                     android:textSize="@dimen/SmallFontSize" />
             </TableRow>
 
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Stock Keeping Unit"
-                    android:inputType="number"
+                    android:inputType="numberSigned"
                     android:textSize="@dimen/InputFontSize" />
             </TableRow>
 

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "product";
     public static final String ID_COLUMN = "productID";
@@ -88,7 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // to check if a value contains a certain string
             // you write : COLUMN LIKE %<put the value here>%
             // we also add --case-insensitive to make it, well, case-insensitive!
-            query += " WHERE " + NAME_COLUMN + " LIKE \"%" + name + "%\"" +
+            query += " WHERE " + ID_COLUMN + " LIKE \"%" + name + "%\"" +
                     "--case-insensitive";
             ;
             selectByName = true;
@@ -98,6 +99,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             query += prefix + SKU_COLUMN + "=" + sku;
         }
         return getProducts(query);
+    }
+
+    public boolean deleteProduct(String productId){
+
+        String query = "SELECT * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getWritableDatabase();
+        boolean selectByName = false;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            query += " WHERE " + ID_COLUMN + " LIKE \"%" + productId + "%\"" ;
+            String idStr = cursor.getString(0);
+            db.delete(TABLE_NAME, ID_COLUMN +  " = " + idStr , null );
+            cursor.close();
+            selectByName = true;
+        }
+        return selectByName;
     }
 
     public List<ProductModel> findProductByName(String name) {

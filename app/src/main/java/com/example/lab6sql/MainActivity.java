@@ -1,12 +1,15 @@
 package com.example.lab6sql;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,19 +17,23 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     TextView pid_textview;
     EditText pname_edittext, sku_edittext;
     Button addBtn, findBtn, dltBtn;
     ListView products_listview;
+    Context context = getBaseContext();
+
 
     DatabaseHelper dbhelper;
+    ProductModel currentproduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -41,14 +48,38 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         updateDisplayedProducts();
         setEventListeners();
+        onItemClick();
     }
+
+    public void onItemClick() {
+
+        List<ProductModel> list = dbhelper.getAllProducts();
+        products_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+
+
+
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
+                ProductModel a = list.get(position);
+                int prodID = a.getProductId();
+                pid_textview.setText(String.valueOf(prodID));
+            }
+        });
+
+
+
+
+    }
+
 
     private void setEventListeners() {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = pname_edittext.getText().toString();
-                int sku = Integer.parseInt(sku_edittext.getText().toString());
+                String sku_str = sku_edittext.getText().toString();
+                int sku = (sku_str.isEmpty()) ? -1 : Integer.parseInt(sku_str);
 
                 ProductModel product = new ProductModel(name, sku);
                 dbhelper.addProduct(product);
@@ -69,7 +100,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // TODO dltBtn
+
+        dltBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            dbhelper.deleteProduct(String.valueOf(pid_textview));
+            updateDisplayedProducts();
+
+
+
+        }
+    });
     }
+
+
 
     private void updateDisplayedProducts() {
         List<ProductModel> products = dbhelper.getAllProducts();

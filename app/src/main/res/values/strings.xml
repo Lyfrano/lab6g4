@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Lab6Sql</string>
+    <string name="not_assigned">Not Assigned</string>
 </resources>
